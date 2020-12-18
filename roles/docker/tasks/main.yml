@@ -1,0 +1,20 @@
+---
+# tasks file for docker
+- name: Install required packages
+  apt:
+    name: apt-transport-https, ca-certificates, curl, software-properties-common
+    update_cache: yes
+- name: Add Docker GPG apt Key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+- name: Add Docker Repository
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu bionic stable
+- name: Update apt and install docker-ce
+  apt: 
+    name: docker-ce, docker-compose
+    update_cache: yes
+- name: Make sure docker is enabled
+  systemd:
+    enabled: yes
+    name: docker
