@@ -4,3 +4,4 @@ redmine_version: 4.1.1
 redmine_user_password: Iremember400
 mariadb_root_password: Idontremember150
 redmine_url: myprojects.example.com
+

@@ -6,26 +6,29 @@ Se ha construido un rol de Ansible que se encarga de instalar MariaDB (motor de 
 
 Para instalar se debe contar con los siguientes paquetes:
 
-Ansible (2.9.6)
-
+Vagrant (2.2.14) [DESCARGA](https://www.vagrantup.com/downloads.html)
+En ubuntu 18.04 o 20.04:
 ```
-sudo apt-get install ansible
-```
-
-Vagrant (2.2.14)
-```
-sudo apt-get install vagrant.
+sudo apt-get install vagrant qemu
 ```
 
-Python (3.8.5)
+Ansible (2.9.6) [DESCARGA](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+En ubuntu 18.04 o 20.04:
+```
+sudo apt-get install ansible 
+```
+
+Python (3.8.5) [DESCARGA](https://www.python.org/downloads/)
+En ubuntu 18.04 o 20.04:
 ```
 sudo apt-get install python python3-pip
 ```
 
-En cuanto a las librerias Python necesarias se encuentran las siguientes.
+En cuanto a las librerias Python necesarias se deben ejecutar los siguientes comandos.
 ```
-pip3 install molecule -U
-pip3 install request -U
+python3 -m venv env
+source env/bin/activate
+pip3 install -r requeriments.txt
 ```
 
 ## Comandos
@@ -46,7 +49,7 @@ Esto levantara la maquina virtual (ubuntu 20.04), la aprovisionara con el rol de
 ### Realizar pruebas
 
 
-Una vez clonado el repositorio nos debemos dirigir la carpeta que contiene el rol (roles/redmine/). Alli se debe ejecutar el siguiente comando para realizar el set de pruebas completo y luego borrar las instancias.
+Una vez clonado el repositorio e inicializado el entorno en Python nos debemos dirigir la carpeta que contiene el rol (roles/redmine/). Alli se debe ejecutar el siguiente comando para realizar el set de pruebas completo y luego borrar las instancias.
 
 ```
 cd roles/redmine/
@@ -65,11 +68,22 @@ Luego sobre este podremos realizar la verificacion con el siguiente comando.
 molecule verify
 ```
 
+### Variables de entorno
+
+Se han agregado una serie de variables de entorno para personalizar la instalacion de Redmine segun se desee. Se lista a continuacion algunas de ellas.
+
++ redmine_version: (Version de redmine)
++ redmine_user_password: (Contraseña del usuario Redmine de la base de datos)
++ mariadb_root_password: (Contraseña del usuario Root de la base de datos)
++ redmine_url: (URL a la que sera accesible el proyecto)
+
+
 ## Mejoras
 
 - [ ] Utilizar RVM para manejar las versiones de Ruby.
+- [ ] Cambiar a Nginx + Puma.
 - [ ] Hacer mas controles con las versiones de Ubuntu.
 - [ ] Indicar correctamenta las dependencias.
-- [ ] Mejorar documentacion del README.
+- [X] Agregar documentacion de Variables de entorno en el README.
 - [ ] Agregar mas variables al rol Redmine.
 
