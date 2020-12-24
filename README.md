@@ -113,4 +113,5 @@ Se han agregado una serie de variables de entorno para personalizar la instalaci
 - [ ] Variable redmine_url no es global.
 - [ ] Mejorar la instalacion de RVM y la forma de invocarlo.
 - [ ] Mejorar pruebas con constantes fijas (puerto) en el test_redmine.py .
+- [ ] Analizar la posibilidad de separar en roles.
 
