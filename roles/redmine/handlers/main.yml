@@ -1,32 +1,38 @@
 ---
 # handlers file for redmine
-- name: install bundler
-  command: bash -lc "gem install bundler"
-  
 - name: generate secret token
   command: bundle exec rake generate_secret_token
   args:
-    chdir: /usr/share/redmine/
+    chdir: /var/www/redmine
+  environment:
+    PATH: "{{ rvm_path }}:{{ ansible_env.PATH }}"
 
 - name: migrate database
   command: bundle exec rake db:migrate
   args:
-    chdir: /usr/share/redmine/
+    chdir: /var/www/redmine
   environment:
     RAILS_ENV: production
+    PATH: "{{ rvm_path }}:{{ ansible_env.PATH }}"
 
 - name: load default data
   command: bundle exec rake redmine:load_default_data
   args:
-    chdir: /usr/share/redmine/
+    chdir: /var/www/redmine
   environment:
     RAILS_ENV: production   
     REDMINE_LANG: es 
-
-- name: enable redmine virtual host
-  command: a2ensite redmine.conf
-
-- name: reload apache2
+    PATH: "{{ rvm_path }}:{{ ansible_env.PATH }}"
+    
+- name: restart puma
   service:
-    name: apache2
-    state: reloaded
+    daemon_reload: yes
+    name: puma
+    state: restarted
+    enabled: yes
+
+- name: restart nginx
+  service:
+    name: nginx
+    state: restarted
+    enabled: yes

@@ -1,0 +1,40 @@
+---
+# tasks file for redmine
+- name: create user redmine and add it to rvm group
+  user:
+    name: redmine
+    shell: /bin/bash
+    groups: rvm
+    append: yes
+
+- name: check if redmine folder exists
+  stat:
+    path: /var/www/redmine/
+  register: check_redmine_folder
+  
+- name: clone redmine project
+  git:
+    repo: 'https://github.com/redmine/redmine'
+    dest: /var/www/redmine/
+    version: 4.1.1
+  when: check_redmine_folder.stat.exists != True
+
+- name: set database file
+  template: 
+    src: database.yml.j2 
+    dest: /var/www/redmine/config/database.yml
+
+- name: install libmysqlclient (only on bionic)
+  apt:
+    name: libmysqlclient-dev
+    update_cache: yes    
+  when: ansible_distribution_release == "bionic"
+  
+- name: set redmine folder permissions
+  file:
+    path: /var/www/redmine/
+    recurse: yes
+    owner: redmine
+    group: redmine
+    
+

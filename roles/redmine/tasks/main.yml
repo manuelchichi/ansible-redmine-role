@@ -1,169 +1,25 @@
 ---
-# tasks file for redmine
-- name: install required packages for mariadb
-  apt:
-    name: software-properties-common, mariadb-server, mariadb-client, python3-pip
-    update_cache: yes
+# tasks file for main redmine
+- name: install mariadb
+  import_tasks: mariadb.yml
 
-- name: Install pymysql
-  pip:
-    name: pymysql
-    state: present
+- name: install rvm
+  import_tasks: rvm.yml
 
-- name: update MariaDB root password
-  community.mysql.mysql_user: 
-    login_user: root
-    login_password: ''
-    login_host: 127.0.0.1
-    login_unix_socket: /var/run/mysqld/mysqld.sock
-    name: root 
-    host: localhost 
-    password: "{{mariadb_root_password}}"
-
-- name: set .my.cnf file
-  template: 
-    src: my.cnf.j2 
-    dest: /root/.my.cnf 
-    mode: 0600
- 
-- name: delete anonymous Database user
-  community.mysql.mysql_user: 
-    name: "" 
-    host: 127.0.0.1 
-    state: absent
-    
-- name: delete Hostname based Database user
-  community.mysql.mysql_user: 
-    name: root 
-    host: "{{ansible_nodename}}" 
-    state: absent
-
-- name: remove Database test database
-  community.mysql.mysql_db: 
-    name: test 
-    state: absent
-    
-- name: create database with name 'redmine'
-  community.mysql.mysql_db:
-    name: redmine
-    encoding: utf8
-    state: present
-
-- name: create user for redmine db
-  community.mysql.mysql_user:
-    name: redmine
-    password: "{{redmine_user_password}}"
-    priv: 'redmine.*:ALL'
-    state: present
-    
-- name: install apache2 and passenger
-  apt:
-    name: apache2, libapache2-mod-passenger
-    update_cache: yes
-    
-- name: check if redmine folder exists
-  stat:
-    path: /usr/share/redmine/
-  register: check_redmine_folder
+- name: clone redmine
+  import_tasks: redmine.yml
   
-- name: clone redmine project
-  git:
-    repo: 'https://github.com/redmine/redmine'
-    dest: /usr/share/redmine/
-    version: 4.1.1
-  when: check_redmine_folder.stat.exists != True
-
-- name: replace ruby version to support ruby 2.7 (only on focal)
-  lineinfile:
-    path: /usr/share/redmine/Gemfile
-    regexp: "ruby '>= 2.3.0', '< 2.7.0'"
-    line: ruby '>= 2.3.0', '<= 2.7.0' if Bundler::VERSION >= '1.12.0'
-  when: ansible_distribution_release == "focal"
-
-- name: set database file
-  template: 
-    src: database.yml.j2 
-    dest: /usr/share/redmine/config/database.yml
-
-- name: install required packages to install GemFiles
-  apt:
-    name: build-essential, patch, zlib1g-dev, liblzma-dev, libmariadb-dev, ruby-dev
-    update_cache: yes
-  notify:
-  - install bundler
-
-- name: flush handlers
-  meta: flush_handlers
-
-- name: install libmysqlclient (only on bionic)
-  apt:
-    name: libmysqlclient-dev
-    update_cache: yes    
-  when: ansible_distribution_release == "bionic"
-
-- name: update Gemfiles
-  community.general.bundler:
-    chdir: /usr/share/redmine/
-    state: present
-  notify:
-    - generate secret token
-    - migrate database
-    - load default data
-    
-- name: flush handlers
-  meta: flush_handlers
+- name: execute bundler
+  import_tasks: bundler.yml
   
-- name: configure passenger module
-  lineinfile:
-    path: /etc/apache2/mods-available/passenger.conf
-    line: "  PassengerDefaultUser www-data"
-    insertafter: "^<IfModule mod_passenger.c>"
-    state: present
+- name: configure puma
+  import_tasks: puma.yml
+  
+- name: install nginx
+  import_tasks: nginx.yml
 
-- name: create a symbolic link to Redmine
-  file:
-    src: /usr/share/redmine/public
-    dest: /var/www/html/redmine
-    state: link
+- name: configure iptables
+  import_tasks: iptables.yml
 
-- name: configure Apache Sites available
-  blockinfile:
-    create: true
-    path: /etc/apache2/sites-available/redmine.conf
-    block: |
-      <VirtualHost *:80>
-        ServerAdmin admin@example.com
-        DocumentRoot /var/www/html/redmine
-        ServerName {{ redmine_url }}
-        ServerAlias www.{{ redmine_url }}
-        <Directory /var/www/html/redmine>
-          RailsBaseURI /redmine
-          PassengerResolveSymlinksInDocumentRoot on
-        </Directory>
-        ErrorLog ${APACHE_LOG_DIR}/error.log
-        CustomLog ${APACHE_LOG_DIR}/access.log combined
-      </VirtualHost>
-  notify:
-    - enable redmine virtual host
-    - reload apache2
 
-- name: enable the Apache2 module rewrite
-  community.general.apache2_module:
-    state: present
-    name: rewrite
-  notify:
-    - enable redmine virtual host
-    - reload apache2
-    
-- name: change directories permissions
-  file: 
-    path: "{{ item }}"
-    owner: www-data
-    group: www-data
-    state: directory
-    recurse: yes
-  loop:
-    - /usr/share/redmine/files
-    - /usr/share/redmine/log
-    - /usr/share/redmine/tmp
-    - /usr/share/redmine/plugin_assets
+

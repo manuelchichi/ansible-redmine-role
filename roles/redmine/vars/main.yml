@@ -1,7 +1,9 @@
 ---
 # vars file for redmine
 redmine_version: 4.1.1
+redmine_url: myprojects.example.com
 redmine_user_password: Iremember400
 mariadb_root_password: Idontremember150
-redmine_url: myprojects.example.com
+ruby_version: 2.6.6
+rvm_path: "/usr/local/rvm/gems/ruby-{{ ruby_version }}/bin:/usr/local/rvm/gems/ruby-{{ ruby_version }}@global/bin:/usr/local/rvm/rubies/ruby-{{ ruby_version }}/bin:/usr/local/rvm/bin"
 

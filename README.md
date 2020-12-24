@@ -1,24 +1,27 @@
 # Ansible Redmine Role + Molecule Testing + Vagrant
 
-Se ha construido un rol de Ansible que se encarga de instalar MariaDB (motor de base de datos), Apache (servidor web HTTP), Passanger (servidor de aplicacion Ruby) y finalmente instala Redmine (sistemas gestor de Tickets). Para utilizar este rol se ha planteado utilizar Vagrant para crear el entorno de desarrollo con VBox como driver. De esta forma, el entorno es aprovisionado con el playbook que implementa el rol descrito. Para las pruebas se utiliza Molecule, el cual se encarga de crear con Vagrant las maquinas virtuales donde se ejecutara el playbook y luego se hace una pequeña comprobacion de los servicios con TestInfra. Las pruebas realizadas se hacen con Ubuntu 20.04 y Ubuntu 18.04.
+Se ha construido un rol de Ansible que se encarga de instalar MariaDB (motor de base de datos), Nginx (servidor web HTTP), Puma (servidor de aplicacion Ruby) y finalmente instala Redmine (sistemas gestor de Tickets). Para utilizar este rol se ha planteado utilizar Vagrant para crear el entorno de desarrollo con VBox como driver. De esta forma, el entorno es aprovisionado con el playbook que implementa el rol descrito. Para las pruebas se utiliza Molecule, el cual se encarga de crear con Vagrant las maquinas virtuales donde se ejecutara el playbook y luego se hace una pequeña comprobacion de los servicios con TestInfra. Las pruebas realizadas se hacen con Ubuntu 20.04 y Ubuntu 18.04.
 
 ## Requerimientos
 
 Para instalar se debe contar con los siguientes paquetes:
 
 Vagrant (2.2.14) [DESCARGA](https://www.vagrantup.com/downloads.html)
+
 En ubuntu 18.04 o 20.04:
 ```
 sudo apt-get install vagrant qemu
 ```
 
 Ansible (2.9.6) [DESCARGA](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+
 En ubuntu 18.04 o 20.04:
 ```
 sudo apt-get install ansible 
 ```
 
 Python (3.8.5) [DESCARGA](https://www.python.org/downloads/)
+
 En ubuntu 18.04 o 20.04:
 ```
 sudo apt-get install python python3-pip
@@ -76,12 +79,13 @@ Se han agregado una serie de variables de entorno para personalizar la instalaci
 + redmine_user_password: (Contraseña del usuario Redmine de la base de datos)
 + mariadb_root_password: (Contraseña del usuario Root de la base de datos)
 + redmine_url: (URL a la que sera accesible el proyecto)
++ ruby_version: (Indica la version de Ruby que se instalara)
 
 
 ## Mejoras
 
-- [ ] Utilizar RVM para manejar las versiones de Ruby.
-- [ ] Cambiar a Nginx + Puma.
+- [X] Utilizar RVM para manejar las versiones de Ruby.
+- [X] Cambiar a Nginx + Puma.
 - [ ] Hacer mas controles con las versiones de Ubuntu.
 - [ ] Indicar correctamenta las dependencias.
 - [X] Agregar documentacion de Variables de entorno en el README.

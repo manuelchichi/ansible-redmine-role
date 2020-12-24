@@ -1,0 +1,14 @@
+[Unit]
+Description=Puma Rails Server
+
+[Service]
+Type=simple
+User=redmine
+WorkingDirectory=/var/www/redmine/
+ExecStart=/usr/local/rvm/bin/rvm-exec {{ ruby_version }} puma -C /var/www/redmine/config/puma.rb
+ExecStop=/usr/local/rvm/bin/rvm-exec {{ ruby_version }} exec pumactl -S /var/www/redmine/pids/puma.state stop
+TimeoutSec=15
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

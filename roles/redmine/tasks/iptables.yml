@@ -1,0 +1,149 @@
+---
+# tasks file for iptables
+
+# Loopback
+- name: allow loopback input
+  iptables:
+    action: append
+    in_interface: lo
+    chain: INPUT
+    jump: ACCEPT
+    
+- name: allow loopback output
+  iptables:
+    action: append
+    out_interface: lo
+    chain: OUTPUT
+    jump: ACCEPT
+
+# Incoming connections 
+- name: allow established and related
+  iptables:
+    action: append
+    chain: INPUT
+    jump: ACCEPT
+    ctstate: ESTABLISHED,RELATED
+
+- name: allow ssh connections INPUT
+  iptables:
+    action: append
+    chain: INPUT
+    protocol: tcp
+    destination_port: 22
+    jump: ACCEPT
+    ctstate: NEW,ESTABLISHED
+
+- name: allow ssh connections OUTPUT
+  iptables:
+    action: append
+    chain: OUTPUT
+    protocol: tcp
+    source_port: 22
+    jump: ACCEPT
+    ctstate: ESTABLISHED
+
+- name: allow http connections INPUT
+  iptables: 
+    action: append
+    chain: INPUT
+    protocol: tcp
+    destination_port: 80
+    jump: ACCEPT
+    ctstate: NEW,ESTABLISHED
+    
+- name: allow http connections OUTPUT
+  iptables: 
+    action: append
+    chain: OUTPUT
+    protocol: tcp
+    source_port: 80
+    jump: ACCEPT
+    ctstate: ESTABLISHED
+    
+# Outcoming connections
+- name: allow http source OUTPUT
+  iptables: 
+    action: append
+    chain: OUTPUT
+    protocol: tcp
+    destination_port: 80
+    jump: ACCEPT
+    ctstate: NEW,ESTABLISHED
+
+- name: allow http source INPUT
+  iptables: 
+    action: append
+    chain: INPUT
+    protocol: tcp
+    source_port: 80
+    jump: ACCEPT
+    ctstate: ESTABLISHED
+
+- name: allow https source OUTPUT
+  iptables: 
+    action: append
+    chain: OUTPUT
+    protocol: tcp
+    destination_port: 443
+    jump: ACCEPT
+    ctstate: NEW,ESTABLISHED
+
+- name: allow https source INPUT
+  iptables: 
+    action: append
+    chain: INPUT
+    protocol: tcp
+    source_port: 443
+    jump: ACCEPT
+    ctstate: ESTABLISHED
+
+- name: allow dns tcp connections OUTPUT
+  iptables: 
+    action: append
+    chain: OUTPUT
+    protocol: tcp
+    destination_port: 53
+    jump: ACCEPT
+    ctstate: NEW,ESTABLISHED
+    
+- name: allow dns tcp source INPUT
+  iptables: 
+    action: append
+    chain: INPUT
+    protocol: tcp
+    source_port: 53
+    jump: ACCEPT
+    ctstate: ESTABLISHED
+
+- name: allow dns udp connections OUTPUT
+  iptables: 
+    action: append
+    chain: OUTPUT
+    protocol: udp
+    destination_port: 53
+    jump: ACCEPT
+    ctstate: NEW,ESTABLISHED
+    
+- name: allow dns udp source INPUT
+  iptables: 
+    action: append
+    chain: INPUT
+    protocol: udp
+    source_port: 53
+    jump: ACCEPT
+    ctstate: ESTABLISHED
+
+- name: deny all INPUT traffic
+  iptables:
+    chain: INPUT
+    policy: DROP
+    
+- name: deny all FORWARD traffic
+  iptables:
+    chain: FORWARD
+    policy: DROP
+    
+- name: deny all OUTPUT traffic
+  iptables:
+    chain: OUTPUT
+    policy: DROP

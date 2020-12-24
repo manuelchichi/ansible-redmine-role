@@ -1,0 +1,64 @@
+---
+# tasks file for installing Mariadb
+
+- name: install required packages for mariadb
+  apt:
+    name: software-properties-common, mariadb-server, mariadb-client, python3-pip
+    update_cache: yes
+
+- name: Install pymysql
+  pip:
+    name: pymysql
+    state: present
+
+- name: update MariaDB root password
+  community.mysql.mysql_user: 
+    login_user: root
+    login_password: ''
+    login_host: 127.0.0.1
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: root 
+    host: localhost 
+    password: "{{mariadb_root_password}}"
+
+- name: set .my.cnf file
+  template: 
+    src: my.cnf.j2 
+    dest: /root/.my.cnf 
+    mode: 0600
+ 
+- name: delete anonymous Database user
+  community.mysql.mysql_user: 
+    name: "" 
+    host: 127.0.0.1 
+    state: absent
+    
+- name: delete Hostname based Database user
+  community.mysql.mysql_user: 
+    name: root 
+    host: "{{ansible_nodename}}" 
+    state: absent
+
+- name: remove Database test database
+  community.mysql.mysql_db: 
+    name: test 
+    state: absent
+    
+- name: create database with name 'redmine'
+  community.mysql.mysql_db:
+    name: redmine
+    encoding: utf8
+    state: present
+
+- name: create user for redmine db
+  community.mysql.mysql_user:
+    name: redmine
+    password: "{{redmine_user_password}}"
+    priv: 'redmine.*:ALL'
+    state: present
+    
+- name: enable mariadb
+  systemd:
+    state: started
+    name: mariadb
+    enabled: yes

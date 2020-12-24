@@ -1,0 +1,36 @@
+---
+# tasks file for bundler
+
+- name: delete puma from Gemfile
+  lineinfile: 
+    dest: /var/www/redmine/Gemfile
+    state: absent 
+    regexp: "^  gem 'puma'"
+
+- name: add puma to Gemfile
+  lineinfile: 
+    dest: /var/www/redmine/Gemfile 
+    line: "gem 'puma'"
+    insertafter: "^gem 'rails'"
+
+- name: update Gemfiles
+  community.general.bundler:
+    chdir: /var/www/redmine
+    state: present
+    extra_args: --without development test
+  notify:
+    - generate secret token
+    - migrate database
+    - load default data
+  environment:
+    PATH: "{{ rvm_path }}:{{ ansible_env.PATH }}"
+
+- name: update rvm directory group
+  file:
+    path: /usr/local/rvm/
+    owner: root
+    group: rvm
+    recurse: yes
+
+- name: flush handlers
+  meta: flush_handlers

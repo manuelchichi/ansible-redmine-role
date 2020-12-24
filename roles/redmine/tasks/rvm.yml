@@ -1,0 +1,48 @@
+---
+# tasks file for rvm
+- name: append rvm path to environment
+  lineinfile: 
+    dest: /etc/environment 
+    state: present 
+    backrefs: yes 
+    regexp: 'PATH=(["]*)((?!.*?{{rvm_path}}).*?)(["]*)$' 
+    line: 'PATH=\1\2:{{rvm_path}}\3'
+
+- name: install required packages to install RVM
+  apt:
+    name: curl, gnupg2, g++, gcc, autoconf, automake, bison, libc6-dev, libffi-dev, libgdbm-dev, libncurses5-dev, libsqlite3-dev, libtool, libyaml-dev, make, pkg-config, sqlite3, zlib1g-dev, libgmp-dev, libreadline-dev, libssl-dev
+    update_cache: yes
+
+- name: install gpg2 keys
+  command: "gpg2 --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB"
+  args:
+    creates: /root/.gnupg/pubring.kbx
+
+- name: install rvm
+  shell: "curl -L https://get.rvm.io | bash -s stable"
+  args:
+    creates: /usr/local/rvm
+
+- name: ensure that ruby is installed
+  command: "rvm install {{ ruby_version }}"
+  args:
+    creates: "/usr/local/rvm/gems/ruby-{{ ruby_version }}"
+  environment:
+    PATH: "{{ rvm_path }}:{{ ansible_env.PATH }}"
+
+- name: set default version of ruby with rvm
+  command: "rvm alias create default ruby-{{ ruby_version }}"
+  args:
+    creates: /usr/local/rvm/config/alias
+  environment:
+    PATH: "{{ rvm_path }}:{{ ansible_env.PATH }}"
+
+- name: install bundler
+  community.general.gem:
+    name: bundler
+    state: present
+  environment:
+    PATH: "{{ rvm_path }}:{{ ansible_env.PATH }}"
+
+
+    
