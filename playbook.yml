@@ -1,6 +1,7 @@
 ---
 - name: Provision servers
   hosts: all
+  become: yes
   roles:
     - redmine
 

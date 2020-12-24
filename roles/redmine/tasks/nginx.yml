@@ -7,7 +7,9 @@
   file:
     path: /etc/nginx/sites-enabled/default
     state: absent
-  notify: restart nginx
+  notify: 
+    - restart nginx
+    - set redmine folder permissions
   
 - name: copy nginx site.conf
   template:
@@ -16,5 +18,13 @@
     owner: root
     group: root
     mode: '0644'
-  notify: restart nginx
-
+  notify: 
+    - restart nginx
+    - set redmine folder permissions
+  
+- name: add the user www-data to redmine group
+  user:
+    name: www-data
+    shell: /bin/bash
+    groups: redmine
+    append: yes

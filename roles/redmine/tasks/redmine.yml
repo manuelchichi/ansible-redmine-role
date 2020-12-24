@@ -24,17 +24,11 @@
     src: database.yml.j2 
     dest: /var/www/redmine/config/database.yml
 
-- name: install libmysqlclient (only on bionic)
+- name: install libmysqlclient 
   apt:
     name: libmysqlclient-dev
-    update_cache: yes    
-  when: ansible_distribution_release == "bionic"
+    update_cache: yes
   
-- name: set redmine folder permissions
-  file:
-    path: /var/www/redmine/
-    recurse: yes
-    owner: redmine
-    group: redmine
+
     
 

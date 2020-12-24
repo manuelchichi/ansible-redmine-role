@@ -1,36 +1,25 @@
 ---
 # tasks file for puma
-- name: add the user nginx to redmine group
-  user:
-    name: nginx
-    shell: /bin/bash
-    groups: redmine
-    append: yes
-    
 - name: create socket directory
   file:
     path: /var/www/redmine/sockets
     state: directory
-    owner: redmine
-    group: redmine
     
 - name: create pids directory
   file:
     path: /var/www/redmine/pids
     state: directory
-    owner: redmine
-    group: redmine
     
 - name: set service file
   template: 
     src: puma.service.j2
-    dest: /etc/systemd/system/puma.service 
+    dest: /etc/systemd/system/puma.service
+  notify: 
+  -  restart puma 
     
 - name: create puma config 
   copy:
     dest: /var/www/redmine/config/puma.rb
-    owner: redmine
-    group: redmine
     content: |
       #!/usr/bin/env puma
 
@@ -45,7 +34,3 @@
       bind "unix://#{application_path}/sockets/puma.sock"
   notify: 
   -  restart puma
-
-- name: flush handlers
-  meta: flush_handlers
-      

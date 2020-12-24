@@ -23,7 +23,15 @@
     RAILS_ENV: production   
     REDMINE_LANG: es 
     PATH: "{{ rvm_path }}:{{ ansible_env.PATH }}"
-    
+
+- name: set redmine folder permissions
+  file:
+    path: /var/www/redmine/
+    recurse: yes
+    owner: redmine
+    group: redmine
+    mode: 0750
+
 - name: restart puma
   service:
     daemon_reload: yes
