@@ -49,9 +49,9 @@ Una vez que tenemos todo lo instalado debemos inicializar la maquina virtual con
 vagrant up
 ```
 
-Esto levantara la maquina virtual (ubuntu 20.04), la aprovisionara con el rol de redmine.
+Esto levantara la maquina virtual (ubuntu 20.04) y la aprovisionara con el rol de redmine.
 
-Una vez finalizados estos pasos se podra acceder en la siguiente direccion localhost:8082 (tanto el puerto como la URL pueden cambiar). Las credenciales del usuario por defecto son (usuario: admin, contraseña: admin).
+Una vez finalizados estos pasos se podra acceder en la siguiente direccion localhost:8082 (el puerto puede cambiar segun el Vagrantfile). Las credenciales del usuario por defecto son usuario: admin y contraseña: admin.
 
 ### Entorno de pruebas.
 
