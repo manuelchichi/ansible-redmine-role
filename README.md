@@ -51,12 +51,7 @@ vagrant up
 
 Esto levantara la maquina virtual (ubuntu 20.04), la aprovisionara con el rol de redmine.
 
-Finalmente para ingresar al sistema debemos agregar en nuestra carpetas de hosts (en linux /etc/hosts) la linea a continuacion.
-```
-127.0.0.1 myprojects.examples.com
-```
-
-Una vez finalizados estos pasos se podra acceder en la siguiente direccion myprojects.example.com:8082 (tanto el puerto como la URL pueden cambiar). Las credenciales del usuario por defecto son (usuario: admin, contraseña: admin).
+Una vez finalizados estos pasos se podra acceder en la siguiente direccion localhost:8082 (tanto el puerto como la URL pueden cambiar). Las credenciales del usuario por defecto son (usuario: admin, contraseña: admin).
 
 ### Entorno de pruebas.
 
