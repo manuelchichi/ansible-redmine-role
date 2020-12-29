@@ -1,4 +1,0 @@
----
-# group_vars file for redmine
-
-redmine_url: myprojects.example.com

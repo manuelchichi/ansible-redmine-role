@@ -14,7 +14,7 @@
 - name: copy nginx site.conf
   template:
     src: site.conf.j2
-    dest: /etc/nginx/sites-enabled/{{ redmine_url }}
+    dest: /etc/nginx/sites-enabled/redmine
     owner: root
     group: root
     mode: '0644'

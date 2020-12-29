@@ -99,7 +99,6 @@ Se han agregado una serie de variables de entorno para personalizar la instalaci
 + redmine_version: (Version de redmine)
 + redmine_user_password: (Contraseña del usuario Redmine de la base de datos)
 + mariadb_root_password: (Contraseña del usuario Root de la base de datos)
-+ redmine_url: (URL a la que sera accesible el proyecto) // Funciona de manera parcial, hay que modificar el archivo en global_urls
 + ruby_version: (Indica la version de Ruby que se instalara)
 
 ## Mejoras
@@ -110,7 +109,6 @@ Se han agregado una serie de variables de entorno para personalizar la instalaci
 - [X] Indicar correctamenta las dependencias.
 - [X] Agregar documentacion de Variables de entorno en el README.
 - [X] Agregar mas variables al rol Redmine.
-- [ ] Variable redmine_url no es global.
 - [ ] Mejorar la instalacion de RVM y la forma de invocarlo.
 - [ ] Mejorar pruebas con constantes fijas (puerto) en el test_redmine.py .
 - [ ] Analizar la posibilidad de separar en roles.

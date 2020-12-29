@@ -16,7 +16,7 @@
   git:
     repo: 'https://github.com/redmine/redmine'
     dest: /var/www/redmine/
-    version: 4.1.1
+    version: "{{redmine_version}}"
   when: check_redmine_folder.stat.exists != True
 
 - name: set database file
