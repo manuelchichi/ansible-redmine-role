@@ -1,3 +1,7 @@
 .vagrant/
 __pycache__/
 env/
+*.pem
+*.tfstate
+*.tfstate.*
+.terraform/
